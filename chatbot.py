@@ -32,7 +32,6 @@ def find_streaming_platforms(movie_title: str, movie_year: int = None) -> str:
 
         movie_id = search_results["results"][0]["id"]
         found_title = search_results["results"][0]["title"]
-        # A linha de print sobre o filme encontrado foi removida daqui.
 
         providers_url = f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers"
         params = {"api_key": TMDB_API_KEY}
@@ -48,17 +47,15 @@ def find_streaming_platforms(movie_title: str, movie_year: int = None) -> str:
         return f"Encontrei '{found_title}' nas seguintes plataformas de streaming no Brasil: {', '.join(platform_names)}."
 
     except Exception as e:
-        # Mantemos um print do erro no console para o caso de algo falhar no futuro,
-        # mas ele só aparecerá se houver um problema real.
         print(f"[ERRO INTERNO] Falha na função find_streaming_platforms: {e}")
         return f"Ocorreu um erro ao buscar por '{movie_title}'."
 
 tools = {"function_declarations": [{"name": "find_streaming_platforms", "description": "Obtém a lista de plataformas de streaming onde um filme está disponível no Brasil.", "parameters": {"type": "OBJECT", "properties": {"movie_title": {"type": "STRING", "description": "O título do filme para pesquisar."}, "movie_year": {"type": "INTEGER", "description": "O ano de lançamento do filme para melhorar a precisão da busca."}}, "required": ["movie_title"]}}]}
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-2.5-flash",
     system_instruction=(
-        "Você é um assistente de cinema especialista e amigável. Sua principal tarefa é entender a intenção do usuário e agir de duas maneiras diferentes nunca recomendando sempre os mesmos filmes de inicio quero que voê varie com quais filmes recomenda:\n\n"
+        "Você é um assistente de cinema especialista e amigável basicamente sua função é recomendar filmes, séries e animes para os usuarios. Sua principal tarefa é entender a intenção do usuário e agir de duas maneiras diferentes nunca recomendando sempre os mesmos filmes de inicio quero que voê varie com quais filmes recomenda:\n\n"
         "**CENÁRIO 1: O usuário pede uma SUGESTÃO ou RECOMENDAÇÃO.**\n"
         "Se o pedido for genérico (ex: 'me recomende um filme de terror', 'filmes com Leonardo DiCaprio', 'o que assistir de slasher'), use seu vasto conhecimento interno para sugerir um ou mais filmes. Dê uma breve sinopse para cada sugestão. **NÃO use nenhuma ferramenta para esta tarefa.** Apenas converse e dê sua opinião como um especialista.\n\n"
         "**CENÁRIO 2: O usuário pergunta sobre um FILME ESPECÍFICO.**\n"
@@ -100,7 +97,7 @@ while True:
         )
         
         history.append({
-            'role': 'model', # O papel é 'model' mas o conteúdo é a resposta da função
+            'role': 'model', 
             'parts': [
                 genai.protos.Part(
                     function_response={
