@@ -1,0 +1,8 @@
+Flask>=2.0
+python-dotenv
+requests
+google-generativeai
+Flask-Cors
+Flask-SQLAlchemy
+Flask-JWT-Extended
+Flask-Bcrypt
